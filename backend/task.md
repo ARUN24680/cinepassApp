@@ -1,0 +1,29 @@
+# Movie Ticket Booking Implementation Tasks
+
+- `[/]` **Phase 1: Infrastructure & Migrations**
+    - `[/]` Refactor [migrate.js](file:///Users/arunkumar/Personal_work/postgres/src/db/migrate.js) to support multiple versioned `.sql` files
+    - `[ ]` Move existing `users` table definition to SQL migration file
+    - `[ ]` Create SQL schema migration for Movie Booking tables (`movies`, `screens`, `seats`, `shows`, `show_seats`, `bookings`)
+    - `[ ]` Run migrations and verify database schema using PostgreSQL client
+- `[ ]` **Phase 2: Authentication Middleware**
+    - `[ ]` Implement [auth.js](file:///Users/arunkumar/Personal_work/postgres/src/middlewares/auth.js) middleware for JWT verification and session binding
+    - `[ ]` Test routes using auth middleware
+- `[ ]` **Phase 3: Seed Script & Data Loading**
+    - `[ ]` Create [seed.js](file:///Users/arunkumar/Personal_work/postgres/src/db/seed.js) to populate movies, screens, seats, and shows
+    - `[ ]` Run seed script and check populated records
+- `[ ]` **Phase 4: Movies & Shows Read APIs**
+    - `[ ]` Create Movie routes, controller, repository
+    - `[ ]` Create Show routes, controller, repository (including fetching real-time seat states)
+- `[ ]` **Phase 5: Booking & Real-time Seat Locking (Transactional)**
+    - `[ ]` Create Booking repository with pessimistic lock `FOR UPDATE` query
+    - `[ ]` Create Booking service to execute transactional seat locks and create pending bookings
+    - `[ ]` Create Booking controller and routes
+- `[ ]` **Phase 6: Stripe Payment & Webhooks**
+    - `[ ]` Add Stripe env variables validation to [env.js](file:///Users/arunkumar/Personal_work/postgres/src/config/env.js)
+    - `[ ]` Create Stripe Webhook endpoint to catch `payment_intent.succeeded` and confirm bookings
+    - `[ ]` Create Booking Cancellation endpoint with Stripe Refunds and seat releases
+- `[ ]` **Phase 7: Lock Expiry Background Cleanup**
+    - `[ ]` Write cleanup job to release expired seat locks
+- `[ ]` **Phase 8: End-to-End Verification**
+    - `[ ]` Verify concurrency control (preventing double booking)
+    - `[ ]` Verify payment flow mock/real
