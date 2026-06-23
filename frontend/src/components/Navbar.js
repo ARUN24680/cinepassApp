@@ -1,18 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import useAuthStore from '@/store/useAuthStore';
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // Only run on the client to avoid hydration mismatch
-    const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token);
-  }, [pathname]); // Re-evaluate when route changes to catch login/logout events
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface-container/80 backdrop-blur-xl border-b border-white/10 shadow-2xl h-20">

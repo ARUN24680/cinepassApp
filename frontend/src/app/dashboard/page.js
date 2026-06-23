@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import api from '@/utils/api';
+import useAuthStore from '@/store/useAuthStore';
 
 const MOCK_BOOKINGS = [
   {
@@ -48,7 +49,9 @@ function DashboardContent() {
   const [bookings, setBookings] = useState(MOCK_BOOKINGS);
   const [loading, setLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState(null);
-  const [user, setUser] = useState(null);
+
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   // Load bookings
   const loadBookings = async () => {
@@ -82,21 +85,10 @@ function DashboardContent() {
 
   useEffect(() => {
     loadBookings();
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('user');
-      if (stored) {
-        try {
-          setUser(JSON.parse(stored));
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    logout();
     window.location.href = '/';
   };
 

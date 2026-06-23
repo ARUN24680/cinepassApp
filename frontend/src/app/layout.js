@@ -5,6 +5,8 @@ import Link from "next/link";
 import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
+import Providers from "./providers";
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
@@ -29,12 +31,13 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body-md text-body-md overflow-x-hidden min-h-screen flex flex-col pb-16 md:pb-0">
-        <SmoothScroll>
-          <Navbar />
-          <div className="flex-grow mt-16">
-            {children}
-          </div>
-          <Footer />
+        <Providers>
+          <SmoothScroll>
+            <Navbar />
+            <div className="flex-grow mt-16">
+              {children}
+            </div>
+            <Footer />
 
           {/* Mobile Bottom NavBar */}
           <div className="md:hidden fixed bottom-0 left-0 right-0 h-16 glass-panel z-50 flex items-center justify-around px-4 border-t-0 rounded-t-2xl">
@@ -56,6 +59,7 @@ export default function RootLayout({ children }) {
             </Link>
           </div>
         </SmoothScroll>
+        </Providers>
       </body>
     </html>
   );
