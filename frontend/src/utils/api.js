@@ -5,11 +5,9 @@ import apiClient from './apiClient';
  */
 export const api = {
   // Auth APIs
-  login: (email, password) =>
-    apiClient.post('/users/login', { email, password }),
-
-  register: (name, email, password) =>
-    apiClient.post('/users/register', { name, email, password }),
+  login: (email, password) => apiClient.post('/users/login', { email, password }),
+  logout: () => apiClient.post('/users/logout'),
+  register: (name, email, password) => apiClient.post('/users/register', { name, email, password }),
 
   // Movies APIs
   getMovies: (search = '') => {
@@ -17,7 +15,7 @@ export const api = {
     return apiClient.get(`/movies${query}`);
   },
 
-  getMovie: (id) => 
+  getMovie: (id) =>
     apiClient.get(`/movies/${id}`),
 
   // Shows APIs
@@ -27,7 +25,7 @@ export const api = {
     return apiClient.get(`/shows${query}`);
   },
 
-  getShowSeats: (showId) => 
+  getShowSeats: (showId) =>
     apiClient.get(`/shows/${showId}/seats`),
 
   // Bookings APIs
@@ -37,7 +35,7 @@ export const api = {
   cancelBooking: (bookingId) =>
     apiClient.post(`/bookings/${bookingId}/cancel`),
 
-  getBookingsHistory: () => 
+  getBookingsHistory: () =>
     apiClient.get('/bookings/history'),
 };
 

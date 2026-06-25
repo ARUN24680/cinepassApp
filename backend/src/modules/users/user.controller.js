@@ -1,5 +1,6 @@
 import userService from './user.service.js';
 import { catchAsync } from '../../utils/errors.js';
+import logger from '../../config/logger.js';
 
 /**
  * Handles HTTP POST request for user registration.
@@ -26,8 +27,15 @@ export const register = catchAsync(async (req, res) => {
 export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
-  // Delegate authentication to the service layer
   const authData = await userService.loginUser(email, password);
+
+  // Set cookie with token
+  res.cookie('token', authData.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  });
 
   // Return success response with 200 OK status containing the JWT token
   res.status(200).json({
@@ -36,7 +44,28 @@ export const login = catchAsync(async (req, res) => {
   });
 });
 
+// Logout: Clears the cookie
+export const logout = catchAsync(async (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged out successfully.',
+  });
+});
+
+
+
+
+
+
+
+
 export default {
   register,
   login,
+  logout,
 };

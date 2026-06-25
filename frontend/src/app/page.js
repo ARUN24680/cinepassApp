@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import api from '@/utils/api';
+import { useMoviesQuery } from '@/hooks/useMovies';
 
 const MOCK_NOW_SHOWING = [
   {
@@ -78,48 +78,25 @@ const MOCK_COMING_SOON = [
 ];
 
 export default function HomePage() {
-  const [movies, setMovies] = useState(MOCK_NOW_SHOWING);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
+  // Debounce search string updates to prevent spamming queries
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        setLoading(true);
-        const res = await api.getMovies(search);
-        if (res.data && res.data.movies && res.data.movies.length > 0) {
-          // Map DB keys to match layout expectations if needed
-          const mapped = res.data.movies.map((m, idx) => ({
-            id: m.id,
-            title: m.title,
-            rating: '4.8', // Rating isn't in DB yet, fallback
-            genre: m.genre || 'Action',
-            duration_mins: m.duration_mins || 120,
-            image: idx === 0 ? MOCK_NOW_SHOWING[0].image : MOCK_NOW_SHOWING[1].image, // Fallback poster images
-          }));
-          setMovies(mapped);
-        } else {
-          // If no movies in DB, fallback to Figma mocks filtered by search
-          const filtered = MOCK_NOW_SHOWING.filter((m) =>
-            m.title.toLowerCase().includes(search.toLowerCase())
-          );
-          setMovies(filtered);
-        }
-      } catch (err) {
-        console.warn('API error, falling back to mock data:', err);
-        // Fallback to mocks
-        const filtered = MOCK_NOW_SHOWING.filter((m) =>
-          m.title.toLowerCase().includes(search.toLowerCase())
-        );
-        setMovies(filtered);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const timer = setTimeout(fetchMovies, 300);
-    return () => clearTimeout(timer);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
   }, [search]);
+
+  const { data: apiMovies, isLoading } = useMoviesQuery(debouncedSearch);
+
+  // Fallback to mock data if API results are empty or query fails
+  const movies = (apiMovies && apiMovies.length > 0)
+    ? apiMovies
+    : MOCK_NOW_SHOWING.filter((m) =>
+        m.title.toLowerCase().includes(search.toLowerCase())
+      );
 
   return (
     <div>
@@ -202,7 +179,7 @@ export default function HomePage() {
             </a>
           </div>
 
-          {loading ? (
+          {isLoading ? (
             <div className="text-center py-10 text-on-surface-variant">Loading movies...</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">

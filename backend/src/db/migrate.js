@@ -35,6 +35,19 @@ const createTasksTable = `
   );
 `;
 
+const createMoviesTable = `
+  CREATE TABLE IF NOT EXISTS movies (
+    id             SERIAL         PRIMARY KEY,
+    title          VARCHAR(255)   NOT NULL, 
+    rating         DECIMAL(3, 1)  DEFAULT 0.0,
+    genre          VARCHAR(255)   NOT NULL,
+    duration_mins  INTEGER        NOT NULL,
+    image          TEXT           NOT NULL
+  );
+`;
+
+
+
 const run = async () => {
   try {
     await client.connect();
@@ -47,6 +60,10 @@ const run = async () => {
     console.log('⏳ Creating tasks table...');
     await client.query(createTasksTable);
     console.log('✅ tasks table ready');
+
+    console.log('⏳ Creating movies table...');
+    await client.query(createMoviesTable);
+    console.log('✅ movies table ready');
 
     console.log('\n🎉 Migration complete! Tables are ready.');
   } catch (err) {

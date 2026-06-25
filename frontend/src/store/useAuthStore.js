@@ -6,7 +6,7 @@ import { create } from 'zustand';
  */
 export const useAuthStore = create((set) => ({
   user: null,
-  token: null,
+  // token: null,
   isLoggedIn: false,
   isInitialized: false,
 
@@ -17,14 +17,14 @@ export const useAuthStore = create((set) => ({
     if (typeof window === 'undefined') return;
 
     try {
-      const token = localStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       const userStr = localStorage.getItem('user');
       const user = userStr ? JSON.parse(userStr) : null;
 
       set({
-        token,
+        // token,
         user,
-        isLoggedIn: !!token,
+        isLoggedIn: !!user,
         isInitialized: true,
       });
     } catch (e) {
@@ -38,12 +38,12 @@ export const useAuthStore = create((set) => ({
    */
   setSession: (user, token) => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('token', token);
+      // localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
     }
     set({
       user,
-      token,
+      // token,
       isLoggedIn: true,
     });
   },
@@ -53,7 +53,7 @@ export const useAuthStore = create((set) => ({
    */
   logout: () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
+      // localStorage.removeItem('token');
       localStorage.removeItem('user');
     }
     set({
