@@ -31,17 +31,31 @@ export default function SeatSelectionPage({ params }) {
     const fetchSeats = async () => {
       try {
         setLoading(true);
-        // Fetch show seat status
+        // 1. Fetch show-specific seat status (contains booked/locked/available layout)
         const res = await api.getShowSeats(id, movieId);
-        if (res.data && res.data.seats && res.data.seats.length > 0) {
-          setSeats(res.data.seats);
-          if (res.data.show_price) setTicketPrice(Number(res.data.show_price));
+        if (res.data && res.data.result && res.data.result.length > 0) {
+          setSeats(res.data.result);
         } else {
-          generateMockSeats();
+          // 2. Fallback: Fetch general template of seats
+          const allSeatsRes = await api.getSeats();
+          if (allSeatsRes.data && allSeatsRes.data.result && allSeatsRes.data.result.length > 0) {
+            setSeats(allSeatsRes.data.result);
+          } else {
+            generateMockSeats();
+          }
         }
       } catch (err) {
-        console.warn('API error fetching seats, generating mock layout:', err);
-        generateMockSeats();
+        console.warn('API error fetching seats, trying general layout or mock:', err);
+        try {
+          const allSeatsRes = await api.getSeats();
+          if (allSeatsRes.data && allSeatsRes.data.result && allSeatsRes.data.result.length > 0) {
+            setSeats(allSeatsRes.data.result);
+          } else {
+            generateMockSeats();
+          }
+        } catch {
+          generateMockSeats();
+        }
       } finally {
         setLoading(false);
       }

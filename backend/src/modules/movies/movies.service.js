@@ -47,13 +47,13 @@ export const getSeats = async () => {
   return showSeats;
 }
 
-// export const getShowSeats = async (showId, movieId) => {
-//   const showSeats = await moviesRepository.findShowSeatsById(showId, movieId);
-//   if (!showSeats) {
-//     throw new NotFoundError(`Show with ID ${id} not found.`);
-//   }
-//   return showSeats;
-// }
+export const getShowSeats = async (showId, movieId) => {
+  const showSeats = await moviesRepository.findShowSeatsById(showId, movieId);
+  if (!showSeats) {
+    throw new NotFoundError(`Show with ID ${showId} not found.`);
+  }
+  return showSeats;
+}
 
 
 
@@ -62,5 +62,5 @@ export default {
   getMovie,
   getMoviesTimes,
   getSeats,
-  // getShowSeats
+  getShowSeats
 };

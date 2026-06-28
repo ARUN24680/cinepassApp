@@ -29,8 +29,8 @@ export const api = {
   // Show seats APIs
   getSeats: () => apiClient.get(`/shows/seats`),
 
-  // getShowSeats: (showId, movieId) =>
-  //   apiClient.get(`/shows/${showId}/movies/${movieId}/seats`),
+  getShowSeats: (showId, movieId) =>
+    apiClient.get(`/shows/${showId}/movies/${movieId}/seats`),
 
   // // Bookings APIs
   // lockSeats: (showId, seatIds) =>

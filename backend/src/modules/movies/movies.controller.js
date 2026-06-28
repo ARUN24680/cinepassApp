@@ -76,19 +76,19 @@ const getSeats = catchAsync(async (req, res) => {
 
 
 
-// const getMovieShowSeats = catchAsync(async (req, res) => {
-//   const { showId, movieId } = req.params;
+const getMovieShowSeats = catchAsync(async (req, res) => {
+  const { showId, movieId } = req.params;
 
-//   console.log("-------->>>>", req.params)
-//   const result = await moviesService.getShowSeats(showId, movieId);
+  console.log("-------->>>>", req.params)
+  const result = await moviesService.getShowSeats(showId, movieId);
 
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       result,
-//     },
-//   });
-// });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      result,
+    },
+  });
+});
 
 
 
@@ -99,5 +99,5 @@ export default {
   getMovieShows,
 
   getSeats,
-  // getMovieShowSeats
+  getMovieShowSeats
 };

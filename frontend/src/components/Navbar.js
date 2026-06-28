@@ -12,9 +12,11 @@ export default function Navbar() {
   const user = useAuthStore((state) => state.user);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    setMounted(true);
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
@@ -61,7 +63,9 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-stack-md">
-          {isLoggedIn ? (
+          {!mounted ? (
+            <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse" />
+          ) : isLoggedIn ? (
             <>
               <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2 hover:bg-white/5 rounded-full">
                 notifications

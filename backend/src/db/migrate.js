@@ -78,6 +78,18 @@ const createShowSeatsTable = `
   );
 `;
 
+
+const createAllSeatsTable = `
+  CREATE TABLE IF NOT EXISTS all_seats (
+    id             SERIAL           PRIMARY KEY,
+    col_num        INTEGER          NOT NULL, 
+    row_num        VARCHAR(255)     NOT NULL, 
+    status         VARCHAR(255)     NOT NULL DEFAULT 'available',
+    type           VARCHAR(255)     NOT NULL DEFAULT 'standard'
+  );
+`;
+
+
 const run = async () => {
   try {
     await client.connect();
@@ -103,6 +115,12 @@ const run = async () => {
     await client.query('DROP TABLE IF EXISTS show_seats CASCADE');
     await client.query(createShowSeatsTable);
     console.log('✅ show seats table ready');
+
+
+    console.log('⏳ Recreating all seats table...');
+    await client.query('DROP TABLE IF EXISTS all_seats CASCADE');
+    await client.query(createAllSeatsTable);
+    console.log('✅ all seats table ready');
 
 
     console.log('\n🎉 Migration complete! Tables are ready.');

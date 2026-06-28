@@ -48,16 +48,16 @@ const findMoviesTimesById = async (id) => {
 };
 
 const getSeats = async () => {
-    const sql = `SELECT * FROM show_seats`;
+    const sql = `SELECT * FROM all_seats`;
     const { rows } = await query(sql, []);
     return rows;
 }
 
-// const findShowSeatsById = async (showId, movieId) => {
-//     const sql = `SELECT * FROM show_seats WHERE show_id = $1 AND movie_id = $2`;
-//     const { rows } = await query(sql, [showId, movieId]);
-//     return rows;
-// }
+const findShowSeatsById = async (showId, movieId) => {
+    const sql = `SELECT * FROM show_seats WHERE movie_id = $1`;
+    const { rows } = await query(sql, [movieId]);
+    return rows;
+}
 
 export default {
     findAll,
@@ -65,5 +65,5 @@ export default {
     countAll,
     findMoviesTimesById,
     getSeats,
-    // findShowSeatsById
+    findShowSeatsById
 };

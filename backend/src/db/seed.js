@@ -136,6 +136,7 @@ const seed = async () => {
         await client.query('TRUNCATE TABLE movies RESTART IDENTITY CASCADE');
         await client.query('TRUNCATE TABLE movies_times RESTART IDENTITY CASCADE');
         await client.query('TRUNCATE TABLE show_seats RESTART IDENTITY CASCADE');
+        await client.query('TRUNCATE TABLE all_seats RESTART IDENTITY CASCADE');
 
 
         // 2. Insert movies
@@ -187,6 +188,26 @@ const seed = async () => {
                 globalId++;
             }
         }
+
+
+        for (const row of ROWS) {
+            for (let col = 1; col <= SEATS_PER_ROW; col++) {
+                let status = 'available';
+                const type = row === 'A' || row === 'B' ? 'premium' : 'standard';
+
+                const sql = `
+                    INSERT INTO all_seats (col_num, row_num, status, type)
+                    VALUES ($1, $2, $3, $4)
+                `;
+                await client.query(sql, [col, row, status, type]);
+                globalId++;
+            }
+        }
+
+
+
+
+
         console.log('✅ show seats seeded');
 
         console.log('🎉 Seeding completed successfully!');
