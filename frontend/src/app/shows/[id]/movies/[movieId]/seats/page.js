@@ -13,7 +13,7 @@ const MOCK_BOOKED = [12, 13, 24, 25, 45, 46, 78, 79, 110, 111];
 const MOCK_LOCKED = [34, 56, 89];
 
 export default function SeatSelectionPage({ params }) {
-  const { id } = use(params);
+  const { id, movieId } = use(params);
   const router = useRouter();
 
   const [movieTitle, setMovieTitle] = useState('Dune: Part Two');
@@ -32,9 +32,10 @@ export default function SeatSelectionPage({ params }) {
       try {
         setLoading(true);
         // Fetch show seat status
-        const res1 = await api.getSeats(id, movieId);
-        if (res1.data && res1.data.result && res1.data.result.length > 0) {
-          setSeats(res1.data.result);
+        const res = await api.getShowSeats(id, movieId);
+        if (res.data && res.data.seats && res.data.seats.length > 0) {
+          setSeats(res.data.seats);
+          if (res.data.show_price) setTicketPrice(Number(res.data.show_price));
         } else {
           generateMockSeats();
         }
@@ -70,7 +71,7 @@ export default function SeatSelectionPage({ params }) {
     };
 
     fetchSeats();
-  }, [id]);
+  }, [id, movieId]);
 
   // Group seats by row for rendering
   const seatsByRow = {};
@@ -100,17 +101,17 @@ export default function SeatSelectionPage({ params }) {
 
       if (res.status === 'success' && res.data) {
         const { booking_id, client_secret } = res.data;
-        router.push(`/checkout/${booking_id}?secret=${client_secret}`);
+        router.push(`/checkout/${booking_id}?secret=${client_secret}&show_id=${id}&movie_id=${movieId}`);
       } else {
         // Fallback for mock environment
-        router.push(`/checkout/mock-${Date.now()}?secret=pi_mock_secret_${Date.now()}`);
+        router.push(`/checkout/mock-${Date.now()}?secret=pi_mock_secret_${Date.now()}&show_id=${id}&movie_id=${movieId}`);
       }
     } catch (err) {
       console.warn('Backend locking failed, proceeding in Demo/Mock Mode:', err.message);
       // Fallback redirect for preview testing
       const mockBookingId = `mock-${Math.floor(Math.random() * 90000) + 10000}`;
       const mockSecret = `pi_mock_secret_${Math.floor(Math.random() * 90000) + 10000}`;
-      router.push(`/checkout/${mockBookingId}?secret=${mockSecret}`);
+      router.push(`/checkout/${mockBookingId}?secret=${mockSecret}&show_id=${id}&movie_id=${movieId}`);
     } finally {
       setLocking(false);
     }

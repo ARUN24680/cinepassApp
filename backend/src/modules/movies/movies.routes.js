@@ -9,4 +9,10 @@ router.get('/', moviesController.getMovies);
 // Retrieve details of a specific movie
 router.get('/:id', moviesController.getMovieById);
 
+// Retrieve showtimes of a specific movie
+router.get('/:id/shows', moviesController.getMovieShows);
+
+router.get('/seats', moviesController.getSeats);
+// router.get('/:showId/movies/:movieId/seats', moviesController.getMovieShowSeats);
+
 export default router;

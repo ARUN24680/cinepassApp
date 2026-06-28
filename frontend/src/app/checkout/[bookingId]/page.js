@@ -100,6 +100,8 @@ function CheckoutContent({ params }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const clientSecret = searchParams.get('secret');
+  const showId = searchParams.get('show_id');
+  const movieId = searchParams.get('movie_id');
 
   const [movieTitle, setMovieTitle] = useState('Dune: Part Two');
   const [totalPrice, setTotalPrice] = useState(32.0);
@@ -329,7 +331,7 @@ function CheckoutContent({ params }) {
             <div className="mt-stack-md flex flex-col items-center gap-4">
               <Link
                 className="text-on-surface-variant hover:text-primary transition-colors font-label-md flex items-center gap-2 group font-semibold"
-                href={`/shows/${bookingId}/seats`}
+                href={showId && movieId ? `/shows/${showId}/movies/${movieId}/seats` : '/'}
               >
                 <span className="material-symbols-outlined transition-transform group-hover:-translate-x-1">
                   arrow_back

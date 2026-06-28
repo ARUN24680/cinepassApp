@@ -35,14 +35,35 @@ const countAll = async ({ search }) => {
 
 
 const findById = async (id) => {
-    const sql = `SELECT id, title, rating, genre, duration_mins, image FROM movies WHERE id = $1;`;
+    const sql = `SELECT id, title, rating, genre, duration_mins, image, release_date, description, backdrop, poster, "cast" FROM movies WHERE id = $1;`;
     const { rows } = await query(sql, [id]);
     return rows[0];
 };
 
 
+const findMoviesTimesById = async (id) => {
+    const sql = `SELECT id, time, format, status FROM movies_times WHERE movie_id = $1`;
+    const { rows } = await query(sql, [id]);
+    return rows;
+};
+
+const getSeats = async () => {
+    const sql = `SELECT * FROM show_seats`;
+    const { rows } = await query(sql, []);
+    return rows;
+}
+
+// const findShowSeatsById = async (showId, movieId) => {
+//     const sql = `SELECT * FROM show_seats WHERE show_id = $1 AND movie_id = $2`;
+//     const { rows } = await query(sql, [showId, movieId]);
+//     return rows;
+// }
+
 export default {
     findAll,
     findById,
     countAll,
+    findMoviesTimesById,
+    getSeats,
+    // findShowSeatsById
 };

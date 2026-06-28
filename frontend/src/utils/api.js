@@ -7,7 +7,9 @@ export const api = {
   // Auth APIs
   login: (email, password) => apiClient.post('/users/login', { email, password }),
   logout: () => apiClient.post('/users/logout'),
-  register: (name, email, password) => apiClient.post('/users/register', { name, email, password }),
+  register: (name, email, password) => apiClient.post('/users/register', { name, email, passwordß }),
+  changePassword: (currentPassword, newPassword, confirmPassword) =>
+    apiClient.post('/users/change-password', { currentPassword, newPassword, confirmPassword }),
 
   // Movies APIs
   getMovies: (search = '') => {
@@ -20,23 +22,25 @@ export const api = {
 
   // Shows APIs
   getShows: (movieId, date) => {
-    let query = `?movie_id=${movieId}`;
-    if (date) query += `&date=${date}`;
-    return apiClient.get(`/shows${query}`);
+    const query = date ? `?date=${date}` : '';
+    return apiClient.get(`/movies/${movieId}/shows${query}`);
   },
 
-  getShowSeats: (showId) =>
-    apiClient.get(`/shows/${showId}/seats`),
+  // Show seats APIs
+  getSeats: () => apiClient.get(`/shows/seats`),
 
-  // Bookings APIs
-  lockSeats: (showId, seatIds) =>
-    apiClient.post('/bookings/lock', { show_id: showId, seat_ids: seatIds }),
+  // getShowSeats: (showId, movieId) =>
+  //   apiClient.get(`/shows/${showId}/movies/${movieId}/seats`),
 
-  cancelBooking: (bookingId) =>
-    apiClient.post(`/bookings/${bookingId}/cancel`),
+  // // Bookings APIs
+  // lockSeats: (showId, seatIds) =>
+  //   apiClient.post('/bookings/lock', { show_id: showId, seat_ids: seatIds }),
 
-  getBookingsHistory: () =>
-    apiClient.get('/bookings/history'),
+  // cancelBooking: (bookingId) =>
+  //   apiClient.post(`/bookings/${bookingId}/cancel`),
+
+  // getBookingsHistory: () =>
+  //   apiClient.get('/bookings/history'),
 };
 
 export default api;

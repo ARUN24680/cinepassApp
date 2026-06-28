@@ -65,6 +65,7 @@ app.use((req, res, next) => {
 // 6. Routes
 app.use('/api/users', userRoutes);
 app.use('/api/movies', moviesRoutes);
+app.use('/api/shows', moviesRoutes);
 
 // 7. Wildcard Route (404 Not Found handling)
 app.all(/(.*)/, (req, res, next) => {

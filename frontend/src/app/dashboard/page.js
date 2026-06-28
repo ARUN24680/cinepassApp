@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import api from '@/utils/api';
 import useAuthStore from '@/store/useAuthStore';
 
@@ -175,12 +176,6 @@ function DashboardContent() {
               </h1>
               <p className="text-on-surface-variant font-body-md font-medium flex items-center gap-4 flex-wrap">
                 <span>Member since Dec 2025</span>
-                <button
-                  onClick={handleLogout}
-                  className="text-error hover:underline text-label-sm font-bold uppercase cursor-pointer"
-                >
-                  Log Out
-                </button>
               </p>
             </div>
           </div>

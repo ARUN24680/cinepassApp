@@ -42,11 +42,41 @@ const createMoviesTable = `
     rating         DECIMAL(3, 1)  DEFAULT 0.0,
     genre          VARCHAR(255)   NOT NULL,
     duration_mins  INTEGER        NOT NULL,
-    image          TEXT           NOT NULL
+    image          TEXT           NOT NULL,
+    release_date   TEXT           NOT NULL,
+    description    TEXT           NOT NULL,
+    backdrop       TEXT           NOT NULL,
+    poster         TEXT           NOT NULL,
+    "cast"         JSONB          NOT NULL,  
+    created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+    updated_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW()
   );
 `;
 
+const createMoviesTimesTable = `
+  CREATE TABLE IF NOT EXISTS movies_times (
+    id             SERIAL         PRIMARY KEY,
+    time           VARCHAR(255)   NOT NULL, 
+    format         VARCHAR(255)   NOT NULL,
+    status         VARCHAR(255)   NOT NULL,
+    movie_id       INTEGER        NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
+    created_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW(),
+    updated_at     TIMESTAMPTZ    NOT NULL DEFAULT NOW()
+  );
+`;
 
+const createShowSeatsTable = `
+  CREATE TABLE IF NOT EXISTS show_seats (
+    id             SERIAL           PRIMARY KEY,
+    col_num        INTEGER          NOT NULL, 
+    row_num        VARCHAR(255)     NOT NULL,
+    seat_id        INTEGER          NOT NULL,
+    movie_id       INTEGER          NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
+    show_seat_id   INTEGER          NOT NULL REFERENCES movies_times(id) ON DELETE CASCADE,
+    status         VARCHAR(255)     NOT NULL DEFAULT 'available',
+    type           VARCHAR(255)     NOT NULL DEFAULT 'standard'
+  );
+`;
 
 const run = async () => {
   try {
@@ -64,6 +94,16 @@ const run = async () => {
     console.log('⏳ Creating movies table...');
     await client.query(createMoviesTable);
     console.log('✅ movies table ready');
+
+    console.log('⏳ Creating movies table...');
+    await client.query(createMoviesTimesTable);
+    console.log('✅ movies table ready');
+
+    console.log('⏳ Recreating show seats table...');
+    await client.query('DROP TABLE IF EXISTS show_seats CASCADE');
+    await client.query(createShowSeatsTable);
+    console.log('✅ show seats table ready');
+
 
     console.log('\n🎉 Migration complete! Tables are ready.');
   } catch (err) {

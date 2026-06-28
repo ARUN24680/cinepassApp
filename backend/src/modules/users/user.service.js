@@ -57,7 +57,33 @@ export const loginUser = async (email, password) => {
   };
 };
 
+/**
+ * Changes a user's password after validating the current password.
+ */
+export const changePasswordUser = async (userId, currentPassword, newPassword) => {
+  // 1. Retrieve the current password hash from the repository
+  const storedHash = await userRepository.getPasswordHash(userId);
+  if (!storedHash) {
+    throw new UnauthorizedError('User not found.');
+  }
+
+  // 2. Compare the current password with the stored hash
+  const isCurrentPasswordCorrect = await bcrypt.compare(currentPassword, storedHash);
+  if (!isCurrentPasswordCorrect) {
+    throw new UnauthorizedError('Incorrect current password.');
+  }
+
+  // 3. Hash the new password
+  const saltRounds = 12;
+  const newPasswordHash = await bcrypt.hash(newPassword, saltRounds);
+
+  // 4. Update password in database
+  const updatedUser = await userRepository.updatePassword(userId, newPasswordHash);
+  return updatedUser;
+};
+
 export default {
   registerUser,
   loginUser,
+  changePasswordUser,
 };

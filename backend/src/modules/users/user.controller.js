@@ -58,14 +58,22 @@ export const logout = catchAsync(async (req, res) => {
 });
 
 
+// Change Password: Validates and updates user's password
+export const changePassword = catchAsync(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user.id;
 
+  await userService.changePasswordUser(userId, currentPassword, newPassword);
 
-
-
-
+  res.status(200).json({
+    status: 'success',
+    message: 'Password updated successfully.',
+  });
+});
 
 export default {
   register,
   login,
   logout,
+  changePassword,
 };

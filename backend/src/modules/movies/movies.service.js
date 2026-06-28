@@ -34,7 +34,33 @@ export const getMovie = async (id) => {
   return movie;
 };
 
+export const getMoviesTimes = async (id) => {
+  const movie = await moviesRepository.findMoviesTimesById(id);
+  if (!movie) {
+    throw new NotFoundError(`Movie with ID ${id} not found.`);
+  }
+  return movie;
+};
+
+export const getSeats = async () => {
+  const showSeats = await moviesRepository.getSeats();
+  return showSeats;
+}
+
+// export const getShowSeats = async (showId, movieId) => {
+//   const showSeats = await moviesRepository.findShowSeatsById(showId, movieId);
+//   if (!showSeats) {
+//     throw new NotFoundError(`Show with ID ${id} not found.`);
+//   }
+//   return showSeats;
+// }
+
+
+
 export default {
   getMoviesList,
   getMovie,
+  getMoviesTimes,
+  getSeats,
+  // getShowSeats
 };

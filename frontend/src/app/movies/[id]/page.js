@@ -4,61 +4,10 @@ import { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/utils/api';
 
-const MOCK_MOVIE = {
-  id: 1,
-  title: 'Dune: Part Two',
-  rating: '9.1',
-  genre: 'Sci-Fi',
-  duration_mins: 166,
-  release_date: 'Mar 1, 2024',
-  description:
-    'Paul Atreides unites with Chani and the Fremen while on a warpath of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, he endeavors to prevent a terrible future only he can foresee.',
-  backdrop:
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuBUfdu726nlXL3igTrToCJucBYpFFMclQ373LDog2__oWTBSghyBsf2LpFSYyrFVbEG8aZK8OzfCszXy9BgGdpW7917wop-pWUL8X3mRhrB3ZdtMtWky4kGjjvZ-23xU_mcs76tWgb1fbYQv5DJgpxHaO3irsMluEBAegNk4EYNXK17hnv67Zq9pObtCCjEwVpI4mgy5ikgVNhfvAtkPu-s-S_NWm_st6VAoOCozj52ChzPerXU1q_u4_Q5oIGksS1vA0QHAJ0TfA',
-  poster:
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuAUGbdggtrC7XiGuOT2rbIXly9woeehnlr0lS67mf-5HIWqZDkjTw8rEiJDztGKfgXZzgh87kdOawnHCR3w0o_5CrpWW7zMzBsU2S5893DzOg8Y8PAIGTGmwb3Hib8bueuTXtubkJih9Zks7tDLaJt9LW4pLq89Q9DhlmFOtOymrGEGVFenv6Val3b3duehqK_V_9lf1e9x2_m_bWDFIYdhWdnTBjyvkWnmukAhMXqdCcZTeSGkHm9_JyCWkzPHHCSYft-yl7PeTw',
-  cast: [
-    {
-      name: 'Timothée Chalamet',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDjj3HeK929GtqyX-k5KM1WhqcbZ3Kd_r7rxK1ar6R7PzCWUnnIGC_qzClj7BDD1LlLZcrVhSH0UEWCtTzcikACe-9gSwGMgfgAMqW8j0gsL40GlJWCSA8X6bEu6qSJu6ruoN-anR2vq2C27l-dWZ8hdMLF4jX8bhCc8r4oJ4YGof1bZFUJorWY9uChG2BJPJpE1KjeQX0epzvyrsbBV4pzRifp68WoKKR-IPr87v7Gf6Wc6GMVUfKPUTusK0naokQk3fSx-Wn4qA',
-    },
-    {
-      name: 'Zendaya',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDlVVXpV6FSkU_6akBBOcQIXwnVryy4Arxy6dX-QEB_IaLmYEuvxqbPYQ5wWJ71qiYlHkzZJO--fbIpx1Hs3d9IGUnUPyuCbO41n5aVhihOsc6m8OZQck1pGhwmFxEk8X5x5f2qnmsZn39M8EI9smOn_CDMFSZsUJNhbKprwElZk9xhnVkn8lz8YmdOHkaiQ-wBz7ljzWvDK0fm20RPwePFJhfN0QhM3JlW-Bdm2lGWQxpzoAvLBS8UGzy4u3kpmpnto8IPHdZfBg',
-    },
-    {
-      name: 'Austin Butler',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuAFgQit6sCnNFTeymgpUikujfhbkl0vxWsSROeQrPQ1c7uZasC5a907g8W5voYWJcLUMlFPN8cCiGYSoaHrIvROYQ4QbJRaEg1aoOl_K0ifYU4rG4rf2ZOcSEF-JD9QQ_RGoNIS5hFpcxGBk9vyykA6zs8Q93T3_TJud3t9K4GjpCsQ6Nm6LwNraOyJQ9nsQi4QlmM3j4yKdA-2Joou2ofAX2jkOs6zXndZm2oaJmHPRHPN6cw3lg0jixGHr9TUP3MrzbFAVFeyuQ',
-    },
-    {
-      name: 'Florence Pugh',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuD93-oFtC9xsmj5xvHz5lhZV8siaB-01mK52kwMseHmRDuScrxSQrSGfhMUd2586gMa-gvwHCPerJ-9gBnEx__-vzaAUD9sQuLE9hqA1YuZ7VIixtxCo-9nt_P8amSUcSJqYdkP3edd8cb3vEKe85LXBKG-gzzoVjVQnc5rwu5L3UbFOjgDdCkkcm_KlE0SKnbuIfr2MyFcHRuzJ7PgevI0maCiv3z9ml3JTbGiBqpCfJjXL7s9IIdn3IgfZ1sCQep48H7lrZzNZQ',
-    },
-  ],
-};
-
-const MOCK_SHOWTIMES = [
-  { id: 45, time: '14:30', format: 'IMAX 4K', status: 'available' },
-  { id: 46, time: '18:00', format: 'IMAX 4K', status: 'available' },
-  { id: 47, time: '21:15', format: 'IMAX 4K', status: 'available' },
-  { id: 48, time: '15:00', format: 'Dolby Cinema', status: 'sold_out' },
-  { id: 49, time: '19:30', format: 'Dolby Cinema', status: 'sold_out' },
-  { id: 50, time: '22:45', format: 'Dolby Cinema', status: 'sold_out' },
-  { id: 51, time: '10:00', format: 'Standard', status: 'available' },
-  { id: 52, time: '13:15', format: 'Standard', status: 'available' },
-  { id: 53, time: '16:45', format: 'Standard', status: 'available' },
-  { id: 54, time: '20:00', format: 'Standard', status: 'available' },
-  { id: 55, time: '23:15', format: 'Standard', status: 'available' },
-];
-
 export default function MovieDetailsPage({ params }) {
   const { id } = use(params);
-  const [movie, setMovie] = useState(MOCK_MOVIE);
-  const [showtimes, setShowtimes] = useState(MOCK_SHOWTIMES);
+  const [movie, setMovie] = useState({})
+  const [showtimes, setShowtimes] = useState([]);
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
   const [dates, setDates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +41,7 @@ export default function MovieDetailsPage({ params }) {
         const movieRes = await api.getMovie(id);
         if (movieRes.data && movieRes.data.movie) {
           setMovie({
-            ...MOCK_MOVIE,
+            ...movie,
             ...movieRes.data.movie,
           });
         }
@@ -115,13 +64,9 @@ export default function MovieDetailsPage({ params }) {
             };
           });
           setShowtimes(mapped);
-        } else {
-          // If no shows, fallback to mocks
-          setShowtimes(MOCK_SHOWTIMES);
         }
       } catch (err) {
         console.warn('API error, falling back to mock details:', err);
-        setShowtimes(MOCK_SHOWTIMES);
       } finally {
         setLoading(false);
       }
@@ -143,7 +88,7 @@ export default function MovieDetailsPage({ params }) {
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent z-10"></div>
           <img
             className="w-full h-full object-cover scale-105 blur-sm brightness-50"
-            src={movie.backdrop || MOCK_MOVIE.backdrop}
+            src={movie?.backdrop}
             alt="Backdrop"
           />
         </div>
@@ -155,8 +100,8 @@ export default function MovieDetailsPage({ params }) {
               <div className="aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
                 <img
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  src={movie.poster || MOCK_MOVIE.poster}
-                  alt={movie.title}
+                  src={movie?.poster}
+                  alt={movie?.title}
                 />
               </div>
             </div>
@@ -165,14 +110,14 @@ export default function MovieDetailsPage({ params }) {
             <div className="md:col-span-9 space-y-stack-md">
               <div className="flex flex-wrap gap-2">
                 <span className="px-3 py-1 rounded-full glass-panel text-label-sm text-primary uppercase tracking-wider font-semibold">
-                  {movie.genre}
+                  {movie?.genre}
                 </span>
                 <span className="px-3 py-1 rounded-full glass-panel text-label-sm text-secondary uppercase tracking-wider font-semibold">
                   IMAX Experience
                 </span>
               </div>
               <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface max-w-2xl leading-none font-bold uppercase">
-                {movie.title}
+                {movie?.title}
               </h1>
               <div className="flex items-center gap-stack-md text-label-md text-on-surface-variant font-semibold">
                 <div className="flex items-center gap-1">
@@ -191,7 +136,7 @@ export default function MovieDetailsPage({ params }) {
               </p>
               <div className="flex flex-wrap gap-stack-md pt-stack-sm items-center">
                 <div className="flex -space-x-3">
-                  {MOCK_MOVIE.cast.map((actor, idx) => (
+                  {movie?.cast?.map((actor, idx) => (
                     <img
                       key={idx}
                       className="w-12 h-12 rounded-full border-2 border-background object-cover"
@@ -227,11 +172,10 @@ export default function MovieDetailsPage({ params }) {
               <button
                 key={idx}
                 onClick={() => setSelectedDateIndex(idx)}
-                className={`flex-shrink-0 w-24 h-32 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-all duration-300 ${
-                  selectedDateIndex === idx
-                    ? 'bg-primary text-on-primary shadow-lg shadow-primary/25'
-                    : 'glass-panel border-white/5 hover:border-primary/50 text-on-surface-variant hover:text-on-surface'
-                }`}
+                className={`flex-shrink-0 w-24 h-32 rounded-2xl flex flex-col items-center justify-center space-y-1 transition-all duration-300 ${selectedDateIndex === idx
+                  ? 'bg-primary text-on-primary shadow-lg shadow-primary/25'
+                  : 'glass-panel border-white/5 hover:border-primary/50 text-on-surface-variant hover:text-on-surface'
+                  }`}
               >
                 <span className={`text-label-sm uppercase font-semibold ${selectedDateIndex === idx ? 'opacity-80' : ''}`}>
                   {date.label}
@@ -274,7 +218,7 @@ export default function MovieDetailsPage({ params }) {
                     {imaxShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}
@@ -301,7 +245,7 @@ export default function MovieDetailsPage({ params }) {
                     {dolbyShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}
@@ -328,7 +272,7 @@ export default function MovieDetailsPage({ params }) {
                     {standardShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}
