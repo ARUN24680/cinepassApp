@@ -1,4 +1,5 @@
 import moviesRepository from './movies.repository.js';
+import bookingsRepository from '../bookings/bookings.repository.js';
 import { NotFoundError } from '../../utils/errors.js';
 
 /**
@@ -47,11 +48,22 @@ export const getSeats = async () => {
   return showSeats;
 }
 
-export const getShowSeats = async (showId, movieId) => {
+export const getShowSeats = async (showId, movieId, date) => {
   const showSeats = await moviesRepository.findShowSeatsById(showId, movieId);
   if (!showSeats) {
     throw new NotFoundError(`Show with ID ${showId} not found.`);
   }
+
+  if (date) {
+    const activeBookings = await bookingsRepository.getActiveBookingsForShow(Number(showId), date);
+    for (const seat of showSeats) {
+      const match = activeBookings.find(b => b.seat_ids.includes(seat.seat_id));
+      if (match) {
+        seat.status = match.status === 'confirmed' ? 'booked' : 'locked';
+      }
+    }
+  }
+
   return showSeats;
 }
 

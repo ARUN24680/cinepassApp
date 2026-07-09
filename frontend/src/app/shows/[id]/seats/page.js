@@ -19,7 +19,6 @@ export default function SeatSelectionPage({ params }) {
   const [movieTitle, setMovieTitle] = useState('Dune: Part Two');
   const [ticketPrice, setTicketPrice] = useState(12.5);
   const [seats, setSeats] = useState([]);
-  console.log("seats---->>>>>>", seats)
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [locking, setLocking] = useState(false);

@@ -78,9 +78,9 @@ const getSeats = catchAsync(async (req, res) => {
 
 const getMovieShowSeats = catchAsync(async (req, res) => {
   const { showId, movieId } = req.params;
+  const { date } = req.query;
 
-  console.log("-------->>>>", req.params)
-  const result = await moviesService.getShowSeats(showId, movieId);
+  const result = await moviesService.getShowSeats(showId, movieId, date);
 
   res.status(200).json({
     status: 'success',

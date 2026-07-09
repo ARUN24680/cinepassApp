@@ -65,6 +65,26 @@ const createMoviesTimesTable = `
   );
 `;
 
+const createBookingsTable = `
+ CREATE TABLE IF NOT EXISTS bookings (
+  id             SERIAL           PRIMARY KEY,
+  user_id        INTEGER          NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  show_id        INTEGER          NOT NULL REFERENCES movies_times(id) ON DELETE CASCADE,
+  booking_date   DATE             NOT NULL,                    -- Target booking date (e.g., '2026-10-24')
+  seat_ids       INTEGER[]        NOT NULL,                    -- Array of booked seat IDs (e.g., '{12, 13}')
+  total_price    DECIMAL(10, 2)   NOT NULL,
+  status         VARCHAR(255)     NOT NULL DEFAULT 'pending',  -- 'pending' (locked), 'confirmed', 'cancelled'
+  created_at     TIMESTAMPTZ      NOT NULL DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ      NOT NULL DEFAULT NOW()
+);
+`;
+
+
+
+
+
+
+
 const createShowSeatsTable = `
   CREATE TABLE IF NOT EXISTS show_seats (
     id             SERIAL           PRIMARY KEY,
@@ -74,7 +94,8 @@ const createShowSeatsTable = `
     movie_id       INTEGER          NOT NULL REFERENCES movies(id) ON DELETE CASCADE,
     show_seat_id   INTEGER          NOT NULL REFERENCES movies_times(id) ON DELETE CASCADE,
     status         VARCHAR(255)     NOT NULL DEFAULT 'available',
-    type           VARCHAR(255)     NOT NULL DEFAULT 'standard'
+    type           VARCHAR(255)     NOT NULL DEFAULT 'standard',
+    booking_id     INTEGER          REFERENCES bookings(id) ON DELETE SET NULL
   );
 `;
 
@@ -102,14 +123,18 @@ const run = async () => {
     console.log('⏳ Creating tasks table...');
     await client.query(createTasksTable);
     console.log('✅ tasks table ready');
-
     console.log('⏳ Creating movies table...');
     await client.query(createMoviesTable);
     console.log('✅ movies table ready');
 
-    console.log('⏳ Creating movies table...');
+    console.log('⏳ Creating movies times table...');
     await client.query(createMoviesTimesTable);
-    console.log('✅ movies table ready');
+    console.log('✅ movies times table ready');
+
+    console.log('⏳ Recreating bookings table...');
+    await client.query('DROP TABLE IF EXISTS bookings CASCADE');
+    await client.query(createBookingsTable);
+    console.log('✅ bookings table ready');
 
     console.log('⏳ Recreating show seats table...');
     await client.query('DROP TABLE IF EXISTS show_seats CASCADE');

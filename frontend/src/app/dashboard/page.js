@@ -200,18 +200,16 @@ function DashboardContent() {
       <div className="flex items-center gap-stack-md border-b border-white/10 mb-stack-md relative font-bold text-lg">
         <button
           onClick={() => setActiveTab('upcoming')}
-          className={`pb-4 px-2 transition-all relative ${
-            activeTab === 'upcoming' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-          }`}
+          className={`pb-4 px-2 transition-all relative ${activeTab === 'upcoming' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
+            }`}
         >
           Upcoming
           {activeTab === 'upcoming' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full" />}
         </button>
         <button
           onClick={() => setActiveTab('past')}
-          className={`pb-4 px-2 transition-all relative ${
-            activeTab === 'past' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
-          }`}
+          className={`pb-4 px-2 transition-all relative ${activeTab === 'past' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'
+            }`}
         >
           Past & Cancelled
           {activeTab === 'past' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full" />}
@@ -244,11 +242,10 @@ function DashboardContent() {
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-headline-sm text-on-surface font-bold text-xl">{b.movie_title}</h3>
                       <span
-                        className={`border px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 ${
-                          b.status === 'confirmed'
-                            ? 'bg-primary/20 text-primary border-primary/30'
-                            : 'bg-secondary/20 text-secondary border-secondary/30'
-                        }`}
+                        className={`border px-3 py-1 rounded-full text-label-sm font-bold flex items-center gap-1 ${b.status === 'confirmed'
+                          ? 'bg-primary/20 text-primary border-primary/30'
+                          : 'bg-secondary/20 text-secondary border-secondary/30'
+                          }`}
                       >
                         <span className="material-symbols-outlined text-[14px]">
                           {b.status === 'confirmed' ? 'check_circle' : 'pending'}
@@ -288,9 +285,8 @@ function DashboardContent() {
                       <button
                         disabled={cancellingId === b.id}
                         onClick={() => handleCancelBooking(b.id)}
-                        className={`flex-1 md:flex-none bg-error/10 hover:bg-error/20 text-error border border-error/30 px-6 py-2 rounded-xl transition-all active:scale-95 ${
-                          cancellingId === b.id ? 'opacity-55' : ''
-                        }`}
+                        className={`flex-1 md:flex-none bg-error/10 hover:bg-error/20 text-error border border-error/30 px-6 py-2 rounded-xl transition-all active:scale-95 ${cancellingId === b.id ? 'opacity-55' : ''
+                          }`}
                       >
                         {cancellingId === b.id ? 'Cancelling...' : 'Cancel Booking'}
                       </button>
@@ -340,24 +336,24 @@ function DashboardContent() {
           {/* Empty State */}
           {((activeTab === 'upcoming' && upcomingBookings.length === 0) ||
             (activeTab === 'past' && pastBookings.length === 0)) && (
-            <div className="py-32 text-center flex flex-col items-center gap-stack-md">
-              <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center">
-                <span className="material-symbols-outlined text-display-lg text-white/10">movie_off</span>
+              <div className="py-32 text-center flex flex-col items-center gap-stack-md">
+                <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-display-lg text-white/10">movie_off</span>
+                </div>
+                <div className="space-y-2">
+                  <h2 className="font-headline-md text-on-surface font-bold text-2xl">No bookings found</h2>
+                  <p className="text-on-surface-variant max-w-sm mx-auto font-medium">
+                    It looks like you haven't booked any movies yet. Ready for your next red carpet adventure?
+                  </p>
+                </div>
+                <a
+                  href="/"
+                  className="bg-primary text-on-primary-container px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+                >
+                  Browse Movies
+                </a>
               </div>
-              <div className="space-y-2">
-                <h2 className="font-headline-md text-on-surface font-bold text-2xl">No bookings found</h2>
-                <p className="text-on-surface-variant max-w-sm mx-auto font-medium">
-                  It looks like you haven't booked any movies yet. Ready for your next red carpet adventure?
-                </p>
-              </div>
-              <a
-                href="/"
-                className="bg-primary text-on-primary-container px-8 py-3 rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
-              >
-                Browse Movies
-              </a>
-            </div>
-          )}
+            )}
         </div>
       )}
     </main>

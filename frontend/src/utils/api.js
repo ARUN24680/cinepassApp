@@ -26,15 +26,19 @@ export const api = {
     return apiClient.get(`/movies/${movieId}/shows${query}`);
   },
 
-  // Show seats APIs
+  // Show seats APIs only list 
   getSeats: () => apiClient.get(`/shows/seats`),
 
-  getShowSeats: (showId, movieId) =>
-    apiClient.get(`/shows/${showId}/movies/${movieId}/seats`),
+  //
 
-  // // Bookings APIs
-  // lockSeats: (showId, seatIds) =>
-  //   apiClient.post('/bookings/lock', { show_id: showId, seat_ids: seatIds }),
+  getShowSeats: (showId, movieId, date) => {
+    const query = date ? `?date=${date}` : '';
+    return apiClient.get(`/shows/${showId}/movies/${movieId}/seats${query}`);
+  },
+
+  // Bookings APIs
+  lockSeats: (showId, seatIds, bookingDate) =>
+    apiClient.post('/bookings/lock', { show_id: showId, seat_ids: seatIds, booking_date: bookingDate }),
 
   // cancelBooking: (bookingId) =>
   //   apiClient.post(`/bookings/${bookingId}/cancel`),

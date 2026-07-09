@@ -78,6 +78,7 @@ export default function MovieDetailsPage({ params }) {
   const imaxShows = showtimes.filter((s) => s.format.includes('IMAX'));
   const dolbyShows = showtimes.filter((s) => s.format.includes('Dolby') || s.format.includes('VIP'));
   const standardShows = showtimes.filter((s) => !s.format.includes('IMAX') && !s.format.includes('Dolby') && !s.format.includes('VIP'));
+  const selectedDateStr = dates[selectedDateIndex]?.fullDate || '';
 
   return (
     <main className="pt-0">
@@ -218,7 +219,7 @@ export default function MovieDetailsPage({ params }) {
                     {imaxShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/movies/${id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats?date=${selectedDateStr}`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}
@@ -245,7 +246,7 @@ export default function MovieDetailsPage({ params }) {
                     {dolbyShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/movies/${id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats?date=${selectedDateStr}`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}
@@ -272,7 +273,7 @@ export default function MovieDetailsPage({ params }) {
                     {standardShows.map((show) => (
                       <Link
                         key={show.id}
-                        href={`/shows/${show.id}/movies/${id}/seats`}
+                        href={`/shows/${show.id}/movies/${id}/seats?date=${selectedDateStr}`}
                         className="px-8 py-4 rounded-xl border border-white/10 hover:border-primary text-headline-sm font-bold text-on-surface transition-all active:scale-95 action-glow bg-white/5"
                       >
                         {show.time}

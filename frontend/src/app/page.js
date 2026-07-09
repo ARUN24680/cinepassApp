@@ -145,7 +145,7 @@ export default function HomePage() {
             <div className="text-center py-10 text-on-surface-variant">Loading movies...</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
-              {movies.map((movie) => (
+              {movies?.length > 0 && movies?.map((movie) => (
                 <div
                   key={movie.id}
                   className="group relative rounded-2xl overflow-hidden glass-panel flex flex-col transition-all duration-300 hover:-translate-y-2"

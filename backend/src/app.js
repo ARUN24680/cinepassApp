@@ -7,6 +7,7 @@ import { NotFoundError } from './utils/errors.js';
 import errorHandler from './middlewares/error.js';
 import userRoutes from './modules/users/user.routes.js';
 import moviesRoutes from './modules/movies/movies.routes.js';
+import bookingsRoutes from './modules/bookings/bookings.routes.js';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 app.use('/api/users', userRoutes);
 app.use('/api/movies', moviesRoutes);
 app.use('/api/shows', moviesRoutes);
+app.use('/api/bookings', bookingsRoutes);
 
 // 7. Wildcard Route (404 Not Found handling)
 app.all(/(.*)/, (req, res, next) => {

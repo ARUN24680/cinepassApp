@@ -8,18 +8,21 @@ import api from '@/utils/api';
 const ROWS = ['J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'];
 const SEATS_PER_ROW = 14;
 
-// Initial mock seat statuses in case API fails
-const MOCK_BOOKED = [12, 13, 24, 25, 45, 46, 78, 79, 110, 111];
-const MOCK_LOCKED = [34, 56, 89];
+// // Initial mock seat statuses in case API fails
+// const MOCK_BOOKED = [12, 13, 24, 25, 45, 46, 78, 79, 110, 111];
+// const MOCK_LOCKED = [34, 56, 89];
 
 export default function SeatSelectionPage({ params }) {
   const { id, movieId } = use(params);
   const router = useRouter();
 
+  // Extract selected date from window location query param (avoids Next.js dynamic Suspense warning)
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const selectedDate = searchParams ? searchParams.get('date') : new Date().toISOString().split('T')[0];
+
   const [movieTitle, setMovieTitle] = useState('Dune: Part Two');
   const [ticketPrice, setTicketPrice] = useState(12.5);
   const [seats, setSeats] = useState([]);
-  console.log("seats---->>>>>>", seats)
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [locking, setLocking] = useState(false);
@@ -32,7 +35,7 @@ export default function SeatSelectionPage({ params }) {
       try {
         setLoading(true);
         // 1. Fetch show-specific seat status (contains booked/locked/available layout)
-        const res = await api.getShowSeats(id, movieId);
+        const res = await api.getShowSeats(id, movieId, selectedDate);
         if (res.data && res.data.result && res.data.result.length > 0) {
           setSeats(res.data.result);
         } else {
@@ -96,9 +99,9 @@ export default function SeatSelectionPage({ params }) {
   const handleSeatClick = (seat) => {
     if (seat.status === 'booked' || seat.status === 'locked') return;
 
-    const isSelected = selectedSeats.some((s) => s.show_seat_id === seat.show_seat_id);
+    const isSelected = selectedSeats.some((s) => s.id === seat.id);
     if (isSelected) {
-      setSelectedSeats(selectedSeats.filter((s) => s.show_seat_id !== seat.show_seat_id));
+      setSelectedSeats(selectedSeats.filter((s) => s.id !== seat.id));
     } else {
       setSelectedSeats([...selectedSeats, seat]);
     }
@@ -111,21 +114,21 @@ export default function SeatSelectionPage({ params }) {
     try {
       setLocking(true);
       const seatIds = selectedSeats.map((s) => s.seat_id);
-      const res = await api.lockSeats(Number(id), seatIds);
+      const res = await api.lockSeats(Number(id), seatIds, selectedDate);
 
       if (res.status === 'success' && res.data) {
         const { booking_id, client_secret } = res.data;
-        router.push(`/checkout/${booking_id}?secret=${client_secret}&show_id=${id}&movie_id=${movieId}`);
+        router.push(`/checkout/${booking_id}?secret=${client_secret}&show_id=${id}&movie_id=${movieId}&date=${selectedDate}`);
       } else {
         // Fallback for mock environment
-        router.push(`/checkout/mock-${Date.now()}?secret=pi_mock_secret_${Date.now()}&show_id=${id}&movie_id=${movieId}`);
+        router.push(`/checkout/mock-${Date.now()}?secret=pi_mock_secret_${Date.now()}&show_id=${id}&movie_id=${movieId}&date=${selectedDate}`);
       }
     } catch (err) {
       console.warn('Backend locking failed, proceeding in Demo/Mock Mode:', err.message);
       // Fallback redirect for preview testing
       const mockBookingId = `mock-${Math.floor(Math.random() * 90000) + 10000}`;
       const mockSecret = `pi_mock_secret_${Math.floor(Math.random() * 90000) + 10000}`;
-      router.push(`/checkout/${mockBookingId}?secret=${mockSecret}&show_id=${id}&movie_id=${movieId}`);
+      router.push(`/checkout/${mockBookingId}?secret=${mockSecret}&show_id=${id}&movie_id=${movieId}&date=${selectedDate}`);
     } finally {
       setLocking(false);
     }
@@ -166,7 +169,7 @@ export default function SeatSelectionPage({ params }) {
                   <span className="w-6 text-label-sm text-on-surface-variant font-bold text-center">{row}</span>
                   <div className="flex gap-2">
                     {seatsByRow[row]?.map((seat, idx) => {
-                      const isSelected = selectedSeats.some((s) => s.show_seat_id === seat.show_seat_id);
+                      const isSelected = selectedSeats.some((s) => s.id === seat.id);
 
                       let statusClass = 'bg-white/10 border-white/20 hover:bg-tertiary-container/40';
                       let content = null;
@@ -183,7 +186,7 @@ export default function SeatSelectionPage({ params }) {
                       }
 
                       return (
-                        <div key={seat.show_seat_id} className="flex items-center">
+                        <div key={seat.id} className="flex items-center">
                           {/* Center aisle spacer */}
                           {idx === 7 && <div className="w-8" />}
                           <button

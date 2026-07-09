@@ -24,6 +24,8 @@ export const metadata = {
   description: "Book movie tickets and reserve seats in real time.",
 };
 
+ 
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${montserrat.variable} ${inter.variable} dark`}>
